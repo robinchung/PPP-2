@@ -33,7 +33,10 @@
 #define IDC_COMBO_BAULD                 1020
 #define IDC_COMBO_BAUDRATE              1020
 #define IDC_COMBO3                      1021
+#define IDC_COMBO                       1021
+#define IDC_COMBO_PARITY                1021
 #define IDC_COMBO4                      1022
+#define IDC_COMBO_BYTESIZE              1022
 #define IDC_BUTTON_OPENPORT             1023
 #define IDC_RADIO1                      1024
 #define IDC_RADIO2                      1025

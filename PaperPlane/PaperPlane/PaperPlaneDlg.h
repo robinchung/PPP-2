@@ -25,6 +25,7 @@ public:
 // 对话框数据
 	enum { IDD = IDD_PAPERPLANE_DIALOG };
 	bool FullScreenCapture();//全屏截图
+	afx_msg void OnFullScreenCapture();
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 /*-----------------------------------------------------------------------------------------------*///仪表盘相关start
@@ -45,6 +46,9 @@ protected:
 /*-----------------------------------------------------------------------------------------------*///串口相关
 public:
 	void CheckCom();
+	void FillComboxItems();
+	afx_msg void OnBnClickedButtonSenddata();
+	afx_msg void OnBnClickedButtonOpenport();
 protected:
 	ComOperating *pComOperating;
 /*-----------------------------------------------------------------------------------------------*/
@@ -58,8 +62,5 @@ protected:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);//响应定时器，主要用于测试
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
-
-
-public:
-	afx_msg void OnFullScreenCapture();
+	
 };

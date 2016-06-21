@@ -72,6 +72,8 @@ BEGIN_MESSAGE_MAP(CPaperPlaneDlg, CDialog)
 	//}}AFX_MSG_MAP
 	ON_WM_TIMER()
 	ON_COMMAND(ID_32771, &CPaperPlaneDlg::OnFullScreenCapture)
+	ON_BN_CLICKED(IDC_BUTTON_SENDDATA, &CPaperPlaneDlg::OnBnClickedButtonSenddata)
+	ON_BN_CLICKED(IDC_BUTTON_OPENPORT, &CPaperPlaneDlg::OnBnClickedButtonOpenport)
 END_MESSAGE_MAP()
 
 
@@ -116,6 +118,7 @@ BOOL CPaperPlaneDlg::OnInitDialog()
 	}
 	pComOperating = new ComOperating();//实例化串口操作类
 	CheckCom();//检测com口
+	FillComboxItems();//填充combox控件条目
 	SetTimer(1,10,NULL);//启动定时器用于测试
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -315,4 +318,77 @@ void CPaperPlaneDlg::CheckCom()
 		((CComboBox *)GetDlgItem(IDC_COMBO_COM))->SetCurSel(0);
 	}
 	else((CComboBox *)GetDlgItem(IDC_COMBO_COM))->EnableWindow(false);
+}
+
+void CPaperPlaneDlg::FillComboxItems()
+{
+	CheckCom();//检测com口
+	((CComboBox *)GetDlgItem(IDC_COMBO_BAUDRATE))->AddString("115200");
+	((CComboBox *)GetDlgItem(IDC_COMBO_BAUDRATE))->AddString("9600");
+	((CComboBox *)GetDlgItem(IDC_COMBO_BAUDRATE))->SetCurSel(1);
+	((CComboBox *)GetDlgItem(IDC_COMBO_PARITY))->AddString("Odd");
+	((CComboBox *)GetDlgItem(IDC_COMBO_PARITY))->AddString("Even");
+	((CComboBox *)GetDlgItem(IDC_COMBO_PARITY))->AddString("Mark");
+	((CComboBox *)GetDlgItem(IDC_COMBO_PARITY))->AddString("None");
+	((CComboBox *)GetDlgItem(IDC_COMBO_PARITY))->SetCurSel(2);
+	((CComboBox *)GetDlgItem(IDC_COMBO_BYTESIZE))->AddString("8");
+	((CComboBox *)GetDlgItem(IDC_COMBO_BYTESIZE))->SetCurSel(0);
+}
+
+void CPaperPlaneDlg::OnBnClickedButtonSenddata()
+{
+	// TODO: Add your control notification handler code here
+	CEdit *pbox;
+	pbox = (CEdit*)GetDlgItem(IDC_BUTTON_SENDDATA);
+	CString str;
+	pbox->GetWindowTextA(str);
+	BYTE *strsend;
+	strsend = (BYTE*)str.GetBuffer(str.GetLength());
+	pComOperating->SendData(strsend,2);
+}
+
+void CPaperPlaneDlg::OnBnClickedButtonOpenport()
+{
+	// TODO: Add your control notification handler code here
+		// TODO: Add your control notification handler code here
+	SettingParam_t params;
+	CString ComStr;
+	((CComboBox *)GetDlgItem(IDC_COMBO_COM))->GetLBText(((CComboBox *)GetDlgItem(IDC_COMBO_COM))->GetCurSel(),ComStr);
+	if(ComStr == "COM1")
+		params.ComNum = 1;
+	else if(ComStr == "COM2")
+		params.ComNum = 2;
+	else if(ComStr == "COM3")
+		params.ComNum = 3;
+	else if(ComStr == "COM4")
+		params.ComNum = 4;
+	else if(ComStr == "COM5")
+		params.ComNum = 5;
+	else if(ComStr == "COM6")
+		params.ComNum = 6;
+	else if(ComStr == "COM7")
+		params.ComNum = 7;
+	else if(ComStr == "COM8")
+		params.ComNum = 8;
+	else if(ComStr == "COM9")
+		params.ComNum = 9;
+	((CComboBox *)GetDlgItem(IDC_COMBO_BAUDRATE))->GetLBText(((CComboBox *)GetDlgItem(IDC_COMBO_BAUDRATE))->GetCurSel(),ComStr);
+	if(ComStr == "9600")
+		params.BaudRate = 9600;
+	else
+		params.BaudRate = 115200;
+	((CComboBox *)GetDlgItem(IDC_COMBO_PARITY))->GetLBText(((CComboBox *)GetDlgItem(IDC_COMBO_PARITY))->GetCurSel(),ComStr);
+	if(ComStr == "None") 
+		params.Parity = 0;
+	else if(ComStr == "Odd")
+		params.Parity = 1;
+	else if(ComStr == "Even") 
+		params.Parity = 2;
+	else if(ComStr == "Mark") 
+		params.Parity = 3;
+	params.ByteSize = 8;
+	//SettingParam_t params = {1,9600,0,8};
+	pComOperating->ComSetting(&params);
+	//MessageBox("参数设置完毕");
+	pComOperating->OpenCom(&params);
 }

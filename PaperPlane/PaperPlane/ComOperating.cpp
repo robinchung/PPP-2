@@ -26,7 +26,7 @@ int ComOperating::GetCom(vector<string> *ComNameStr)
 	HANDLE hCom;
 	char Temp[255];//血的教训，数组一定要足够大否则容易造成指针访问越界
 	int FlagNum = 0;
-	for(int count=1;count<=15;count++)//逐个检测com口是否能打开
+	for(int count=1;count<=9;count++)//逐个检测com口是否能打开
 	{
 		sprintf(Temp,"COM%d",count);
 		hCom = CreateFile(Temp,0,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0);
@@ -94,7 +94,7 @@ void ComOperating::GetComSetting(DCB *dcb)
 long ComOperating::OpenCom(SettingParam_t *pSettingParam)
 {
 	DCB dcb;
-	long InBufferSize,OutBufferSize;//设置缓冲区buffer大小还需要调试
+	long InBufferSize = 2048,OutBufferSize = 2048;//设置缓冲区buffer大小还需要调试
 	char szMsg[255];
 	if(pSettingParam->ComNum>9)
 		sprintf(szMsg,"////.//COM%d",pSettingParam->ComNum);
