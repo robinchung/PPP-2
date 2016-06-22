@@ -127,6 +127,23 @@ long ComOperating::OpenCom(SettingParam_t *pSettingParam)
 	return 1;
 }
 
+long ComOperating:: CloseCom()
+{
+	if(m_COM_Handle == NULL )
+		return( 1 );
+	SetCommMask(m_COM_Handle ,NULL);
+	SetEvent(m_OverlappedRead.hEvent);
+	SetEvent(m_OverlappedWrite.hEvent);
+	if( m_OverlappedRead.hEvent != NULL ) 
+		CloseHandle( m_OverlappedRead.hEvent );
+	if( m_OverlappedWrite.hEvent != NULL )
+		CloseHandle( m_OverlappedWrite.hEvent );
+	if (CloseHandle( m_COM_Handle )==FALSE)
+		return (2);
+	m_COM_Handle = NULL;
+	return( 0 );
+}
+
 long ComOperating:: SendData(BYTE *byteBuffer,long lngSize)
 {
 	DWORD dwBytesWritten=lngSize;

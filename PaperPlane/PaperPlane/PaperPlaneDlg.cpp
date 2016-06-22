@@ -117,7 +117,6 @@ BOOL CPaperPlaneDlg::OnInitDialog()
 		return false;
 	}
 	pComOperating = new ComOperating();//实例化串口操作类
-	CheckCom();//检测com口
 	FillComboxItems();//填充combox控件条目
 	SetTimer(1,10,NULL);//启动定时器用于测试
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
@@ -316,6 +315,7 @@ void CPaperPlaneDlg::CheckCom()
 		((CComboBox *)GetDlgItem(IDC_COMBO_COM))->AddString(strtemp.c_str());
 		}
 		((CComboBox *)GetDlgItem(IDC_COMBO_COM))->SetCurSel(0);
+		strtemp.clear();
 	}
 	else((CComboBox *)GetDlgItem(IDC_COMBO_COM))->EnableWindow(false);
 }
@@ -352,43 +352,52 @@ void CPaperPlaneDlg::OnBnClickedButtonOpenport()
 	// TODO: Add your control notification handler code here
 		// TODO: Add your control notification handler code here
 	SettingParam_t params;
-	CString ComStr;
-	((CComboBox *)GetDlgItem(IDC_COMBO_COM))->GetLBText(((CComboBox *)GetDlgItem(IDC_COMBO_COM))->GetCurSel(),ComStr);
-	if(ComStr == "COM1")
-		params.ComNum = 1;
-	else if(ComStr == "COM2")
-		params.ComNum = 2;
-	else if(ComStr == "COM3")
-		params.ComNum = 3;
-	else if(ComStr == "COM4")
-		params.ComNum = 4;
-	else if(ComStr == "COM5")
-		params.ComNum = 5;
-	else if(ComStr == "COM6")
-		params.ComNum = 6;
-	else if(ComStr == "COM7")
-		params.ComNum = 7;
-	else if(ComStr == "COM8")
-		params.ComNum = 8;
-	else if(ComStr == "COM9")
-		params.ComNum = 9;
-	((CComboBox *)GetDlgItem(IDC_COMBO_BAUDRATE))->GetLBText(((CComboBox *)GetDlgItem(IDC_COMBO_BAUDRATE))->GetCurSel(),ComStr);
-	if(ComStr == "9600")
-		params.BaudRate = 9600;
+	CString ComStr,PortStr;
+	GetDlgItem(IDC_BUTTON_OPENPORT_CLOSEPORT)->GetWindowText(PortStr);
+	if(PortStr == "OpenPort")
+	{
+		((CComboBox *)GetDlgItem(IDC_COMBO_COM))->GetLBText(((CComboBox *)GetDlgItem(IDC_COMBO_COM))->GetCurSel(),ComStr);
+		if(ComStr == "COM1")
+			params.ComNum = 1;
+		else if(ComStr == "COM2")
+			params.ComNum = 2;
+		else if(ComStr == "COM3")
+			params.ComNum = 3;
+		else if(ComStr == "COM4")
+			params.ComNum = 4;
+		else if(ComStr == "COM5")
+			params.ComNum = 5;
+		else if(ComStr == "COM6")
+			params.ComNum = 6;
+		else if(ComStr == "COM7")
+			params.ComNum = 7;
+		else if(ComStr == "COM8")
+			params.ComNum = 8;
+		else if(ComStr == "COM9")
+			params.ComNum = 9;
+		((CComboBox *)GetDlgItem(IDC_COMBO_BAUDRATE))->GetLBText(((CComboBox *)GetDlgItem(IDC_COMBO_BAUDRATE))->GetCurSel(),ComStr);
+		if(ComStr == "9600")
+			params.BaudRate = 9600;
+		else
+			params.BaudRate = 115200;
+		((CComboBox *)GetDlgItem(IDC_COMBO_PARITY))->GetLBText(((CComboBox *)GetDlgItem(IDC_COMBO_PARITY))->GetCurSel(),ComStr);
+		if(ComStr == "None") 
+			params.Parity = 0;
+		else if(ComStr == "Odd")
+			params.Parity = 1;
+		else if(ComStr == "Even") 
+			params.Parity = 2;
+		else if(ComStr == "Mark") 
+			params.Parity = 3;
+		params.ByteSize = 8;
+		pComOperating->ComSetting(&params);
+		pComOperating->OpenCom(&params);
+		GetDlgItem(IDC_BUTTON_OPENPORT_CLOSEPORT)->SetWindowText(_T("ClosePort"));
+	}
 	else
-		params.BaudRate = 115200;
-	((CComboBox *)GetDlgItem(IDC_COMBO_PARITY))->GetLBText(((CComboBox *)GetDlgItem(IDC_COMBO_PARITY))->GetCurSel(),ComStr);
-	if(ComStr == "None") 
-		params.Parity = 0;
-	else if(ComStr == "Odd")
-		params.Parity = 1;
-	else if(ComStr == "Even") 
-		params.Parity = 2;
-	else if(ComStr == "Mark") 
-		params.Parity = 3;
-	params.ByteSize = 8;
-	//SettingParam_t params = {1,9600,0,8};
-	pComOperating->ComSetting(&params);
-	//MessageBox("参数设置完毕");
-	pComOperating->OpenCom(&params);
+	{
+		pComOperating->CloseCom();
+		GetDlgItem(IDC_BUTTON_OPENPORT_CLOSEPORT)->SetWindowText(_T("OpenPort"));
+	}
+	
 }

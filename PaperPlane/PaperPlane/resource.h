@@ -38,6 +38,7 @@
 #define IDC_COMBO4                      1022
 #define IDC_COMBO_BYTESIZE              1022
 #define IDC_BUTTON_OPENPORT             1023
+#define IDC_BUTTON_OPENPORT_CLOSEPORT   1023
 #define IDC_RADIO1                      1024
 #define IDC_RADIO2                      1025
 #define IDC_RADIO3                      1026
